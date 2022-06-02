@@ -1,4 +1,3 @@
-from pytest import skip
 from src.jobs import read
 
 
@@ -96,7 +95,7 @@ def get_max_salary(path):
         map(
             lambda job: int(job["max_salary"])
             if job["max_salary"].isnumeric()
-            else skip(),
+            else 0,
             jobs,
         )
     )
@@ -122,7 +121,7 @@ def get_min_salary(path):
         map(
             lambda job: int(job["min_salary"])
             if job["min_salary"].isnumeric()
-            else skip(),
+            else 1000000,
             jobs,
         )
     )
