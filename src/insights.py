@@ -1,3 +1,4 @@
+from pytest import skip
 from src.jobs import read
 
 
@@ -17,10 +18,7 @@ def get_unique_job_types(path):
         List of unique job types
     """
     jobs = read(path)
-    jobs_types = set()
-    for job in jobs:
-        jobs_types.add(job["job_type"])
-    return list(jobs_types)
+    return list(set(map(lambda job: job["job_type"], jobs)))
 
 
 def filter_by_job_type(jobs, job_type):
@@ -38,7 +36,7 @@ def filter_by_job_type(jobs, job_type):
     list
         List of jobs with provided job_type
     """
-    return [job for job in jobs if job["job_type"] == job_type]
+    return list(filter(lambda job: job["job_type"] == job_type, jobs))
 
 
 def get_unique_industries(path):
@@ -57,11 +55,7 @@ def get_unique_industries(path):
         List of unique industries
     """
     jobs = read(path)
-    industries = set()
-    for job in jobs:
-        if job["industry"]:
-            industries.add(job["industry"])
-    return list(industries)
+    return set(filter(None, map(lambda job: job["industry"], jobs)))
 
 
 def filter_by_industry(jobs, industry):
@@ -79,11 +73,7 @@ def filter_by_industry(jobs, industry):
     list
         List of jobs with provided industry
     """
-    return [
-        industry_type
-        for industry_type in jobs
-        if industry_type["industry"] == industry
-    ]
+    return list(filter(lambda job: job["industry"] == industry, jobs))
 
 
 def get_max_salary(path):
@@ -102,11 +92,14 @@ def get_max_salary(path):
         The maximum salary paid out of all job opportunities
     """
     jobs = read(path)
-    max_salary = set()
-    for job in jobs:
-        if job["max_salary"].isnumeric():
-            max_salary.add(int(job["max_salary"]))
-    return max(max_salary)
+    return max(
+        map(
+            lambda job: int(job["max_salary"])
+            if job["max_salary"].isnumeric()
+            else skip(),
+            jobs,
+        )
+    )
 
 
 def get_min_salary(path):
@@ -125,11 +118,14 @@ def get_min_salary(path):
         The minimum salary paid out of all job opportunities
     """
     jobs = read(path)
-    min_salary = set()
-    for job in jobs:
-        if job["min_salary"].isnumeric():
-            min_salary.add(int(job["min_salary"]))
-    return min(min_salary)
+    return min(
+        map(
+            lambda job: int(job["min_salary"])
+            if job["min_salary"].isnumeric()
+            else skip(),
+            jobs,
+        )
+    )
 
 
 def matches_salary_range(job, salary):
