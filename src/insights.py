@@ -17,7 +17,7 @@ def get_unique_job_types(path):
         List of unique job types
     """
     jobs = read(path)
-    return list(set(map(lambda job: job["job_type"], jobs)))
+    return set(map(lambda job: job["job_type"], jobs))
 
 
 def filter_by_job_type(jobs, job_type):
@@ -92,12 +92,7 @@ def get_max_salary(path):
     """
     jobs = read(path)
     return max(
-        map(
-            lambda job: int(job["max_salary"])
-            if job["max_salary"].isnumeric()
-            else 0,
-            jobs,
-        )
+        int(job["max_salary"]) for job in jobs if job["max_salary"].isnumeric()
     )
 
 
@@ -118,12 +113,7 @@ def get_min_salary(path):
     """
     jobs = read(path)
     return min(
-        map(
-            lambda job: int(job["min_salary"])
-            if job["min_salary"].isnumeric()
-            else 1000000,
-            jobs,
-        )
+        int(job["min_salary"]) for job in jobs if job["min_salary"].isnumeric()
     )
 
 
